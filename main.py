@@ -33,6 +33,8 @@ def cabeleireiro():
 
 @app.route("/numero/", methods=["Get", "Post"])
 def numero():
+    
+    
 
     return render_template("numero.html")
 
