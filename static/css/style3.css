@@ -1,0 +1,20 @@
+#carouselExampleControls {
+    width:100%; 
+    height: 300px;
+    overflow: hidden;
+  }
+
+.logofim {
+    width: 18rem;
+    border: 2px solid black;
+}
+
+.orientar >a:link {
+    text-decoration: none;
+    color:black;
+}
+
+.orientar >a:visited {
+    text-decoration: none;
+    color:black;
+}
