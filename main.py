@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, make_response
+import random
 
 app = Flask(__name__)
 
@@ -31,12 +32,49 @@ def login():
 def cabeleireiro():
     return render_template("cabeleireiro.html")
 
-@app.route("/numero/", methods=["Get", "Post"])
+@app.route("/numero/", methods=["Get"])
 def numero():
-    
-    
 
-    return render_template("numero.html")
+    segredo = request.cookies.get("segredo")
+
+    pagina = make_response(render_template("numero.html"))
+
+    if not segredo:
+        novo_segredo = random.randint(1, 10)
+        pagina.set_cookie("segredo", str(novo_segredo))
+
+    return pagina
+
+    #elif request.method == "POST":
+        #adivinha = request.form.get("tentativa")
+
+        #if adivinha == "segredo":
+            #mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str("segredo"))
+
+            #pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
+            #pagina.set_cookie("segredo", str(random.randint(1, 10)))
+
+            #return pagina
+            #render_template("sucesso.html")
+
+@app.route("/sucesso", methods=["POST"])
+def sucesso():
+    adivinha = int(request.form.get("tentativa"))
+    segredo = int(request.cookies.get("segredo"))
+
+    if adivinha == segredo:
+        mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str("segredo"))
+
+        pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
+        pagina.set_cookie("segredo", str(random.randint(1, 10)))
+
+        return pagina
+
+
+    
+       
+
+
 
 if __name__ == '__main__':
     app.run()  # if you use the port parameter, delete it before deploying to Heroku
