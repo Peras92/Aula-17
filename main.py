@@ -63,12 +63,22 @@ def sucesso():
     segredo = int(request.cookies.get("segredo"))
 
     if adivinha == segredo:
-        mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str("segredo"))
+        mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(segredo))
 
         pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
         pagina.set_cookie("segredo", str(random.randint(1, 10)))
 
         return pagina
+
+    elif adivinha > segredo:
+        mensagem = "O {0} não é o número certo. Tenta um número menor.".format(str(adivinha))
+
+        return render_template("sucesso.html", mensagem=mensagem)
+
+    elif adivinha < segredo:
+        mensagem = "O {0} não é o número certo. Tenta um número maior.".format(str(adivinha))
+
+        return render_template("sucesso.html", mensagem=mensagem)
 
 
     
