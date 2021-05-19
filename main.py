@@ -32,59 +32,40 @@ def login():
 def cabeleireiro():
     return render_template("cabeleireiro.html")
 
-@app.route("/numero/", methods=["Get"])
+@app.route("/numero/", methods=["Get", "POST"])
 def numero():
+    if request.method == "GET":
+        segredo = request.cookies.get("segredo")
 
-    segredo = request.cookies.get("segredo")
+        pagina = make_response(render_template("numero.html"))
 
-    pagina = make_response(render_template("numero.html"))
-
-    if not segredo:
-        novo_segredo = random.randint(1, 10)
-        pagina.set_cookie("segredo", str(novo_segredo))
-
-    return pagina
-
-    #elif request.method == "POST":
-        #adivinha = request.form.get("tentativa")
-
-        #if adivinha == "segredo":
-            #mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str("segredo"))
-
-            #pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
-            #pagina.set_cookie("segredo", str(random.randint(1, 10)))
-
-            #return pagina
-            #render_template("sucesso.html")
-
-@app.route("/sucesso", methods=["POST"])
-def sucesso():
-    adivinha = int(request.form.get("tentativa"))
-    segredo = int(request.cookies.get("segredo"))
-
-    if adivinha == segredo:
-        mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(segredo))
-
-        pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
-        pagina.set_cookie("segredo", str(random.randint(1, 10)))
+        if not segredo:
+            novo_segredo = random.randint(1, 10)
+            pagina.set_cookie("segredo", str(novo_segredo))
 
         return pagina
 
-    elif adivinha > segredo:
-        mensagem = "O {0} não é o número certo. Tenta um número menor.".format(str(adivinha))
+    elif request.method == "POST":
+        adivinha = int(request.form.get("tentativa"))
+        segredo = int(request.cookies.get("segredo"))
 
-        return render_template("sucesso.html", mensagem=mensagem)
+        if adivinha == segredo:
+            mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(segredo))
 
-    elif adivinha < segredo:
-        mensagem = "O {0} não é o número certo. Tenta um número maior.".format(str(adivinha))
+            pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
+            pagina.set_cookie("segredo", str(random.randint(1, 10)))
 
-        return render_template("sucesso.html", mensagem=mensagem)
+            return pagina
 
+        elif adivinha > segredo:
+            mensagem = "O {0} não é o número certo. Tenta um número menor.".format(str(adivinha))
 
-    
-       
+            return render_template("sucesso.html", mensagem=mensagem)
 
+        elif adivinha < segredo:
+            mensagem = "O {0} não é o número certo. Tenta um número maior.".format(str(adivinha))
 
-
+            return render_template("sucesso.html", mensagem=mensagem)
+   
 if __name__ == '__main__':
     app.run()  # if you use the port parameter, delete it before deploying to Heroku
