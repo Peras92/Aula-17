@@ -10,7 +10,7 @@ def index():
 
 @app.route("/aboutme/")
 def about_me():
-    return render_template("about_me.html")
+    return render_template("about_me.html", page = "aboutme")
 
 @app.route("/portefolio/")
 def portfolio():
