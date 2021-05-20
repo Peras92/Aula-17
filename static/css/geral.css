@@ -10,3 +10,15 @@ h1 {
 h2 {
     color: #edf5e1;;
 }
+
+a {
+    color: inherit;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+ }

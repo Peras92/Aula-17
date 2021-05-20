@@ -6,12 +6,12 @@
   <meta name="author" content="Rui Pereira">
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.5.0/css/perfect-scrollbar.css">
+  
   <!--Geral-->
   <title>{% block title %}Landing page do Rui{% endblock title %}</title>
   <link rel="stylesheet" href="/static/css/geral.css">
@@ -45,15 +45,60 @@
       </ul>
     </div>
   </nav>
-  <script>
-    $(document).ready(function () {
-    $("#{{request.endpoint}}").addClass("active"); })
-  </script>
+
   {% block content %}
 
   {% endblock content %}
 
 
+<!-- Footer -->
+<footer class="text-center text-lg-start bg-dark text-muted footer">
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-5">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            <i class=""></i>Rui Martins Pereira
+          </h6>
+          <p>
+            Página dedicada a mostrar alguns conhecimentos de programação meus.
+          </p>
+        </div>
+        <!-- Grid column -->
+           
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Contactos
+          </h6>
+          <p>
+            <i class="fas fa-envelope me-3"></i> <a href="mailto:ruisilvapereira1@gmail.com">ruisilvapereira1@gmail.com
+          </p></a>
+          <p><i class="fas fa-phone me-3"></i><a href="tel:+351961103249">+351 961103249</p></a>
+        </div>
+        <!-- Grid column -->
+      </div>
+      <!-- Grid row -->
+    </div>
+  </section>
+  <!-- Section: Links  -->
+
+  <!-- Copyright -->
+  <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" href="/">Rui Martins Pereira</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   </body>
 
 
