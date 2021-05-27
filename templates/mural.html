@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set active_page = "mural" %}
+
+{% block content %}
+    <div class="container text-center">
+        <h1>Um chat simples</h1>
+
+        <form action="/add-message" method="POST">
+            <input name="utilizador" placeholder="O teu nome">
+            <br><br>
+            
+            <textarea placeholder="Escreve a tua mensagem" name="texto" rows="10" cols="30"></textarea>
+            
+            <br><br>
+
+            <button type="submit">Enviar mensagem</button>
+
+        </form>
+
+        <h2>Mensagens deixadas:</h2>
+
+        {% for i in mensagem.items %}
+        <p>
+            <strong>{{i.utilizador}}:</strong> {{i.texto}}
+        </p>
+        {% endfor %}
+
+        <p>
+            {% for page_num in range(mensagem.pages) %}
+                <a href="/mural?page={{page_num+1}}">Pagina {{page_num+1}} </a>
+            {% endfor %}
+
+        </p>
+        <h2>Mensagens deixadas:</h2>
+        <h2>Mensagens deixadas:</h2>
+        <h2>Mensagens deixadas:</h2>
+    </div>
+
+{% endblock content %}
