@@ -1,4 +1,4 @@
-def utilizador():
+def utilizador(user):
     email_address = request.cookies.get("email")
 
     if email_address:

@@ -49,8 +49,11 @@
         </li>
       </ul>
     </div>
-    <p>Olá </p>
-    <a class="btn btn-secondary" href="/login/" role="button" >Login</a>
+    {% if user %}
+    <span class="navbar-brand mb-0 h1">Olá {{user.nome}}</span>
+    {% else %}
+    <a class="btn btn-secondary" href="/registo/" role="button" >Login</a>
+    {% endif %}
   </nav>
 
   {% block content %}

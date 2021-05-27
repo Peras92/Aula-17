@@ -16,11 +16,23 @@ class Mensagem(db.Model):
     utilizador = db.Column(db.String, unique=False)
     texto = db.Column(db.String, unique=False)
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
+    segredo = db.Column(db.Integer)
+
 db.create_all()
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    email_address = request.cookies.get("email")
+
+    if email_address:
+        user = db.query(User).filter_by(email=email_address).first()
+    else:
+        user = None
+    return render_template("index.html", user=user)
 
 @app.route("/aboutme/")
 def about_me():
@@ -48,6 +60,13 @@ def cabeleireiro():
 
 @app.route("/numero/", methods=["Get", "POST"])
 def numero():
+    email_address = request.cookies.get("email")
+
+    if email_address:
+        user = db.query(User).filter_by(email=email_address).first()
+    else:
+        user = None
+
     if request.method == "GET":
         segredo = request.cookies.get("segredo")
 
@@ -79,7 +98,7 @@ def numero():
         elif adivinha < segredo:
             mensagem = "O {0} não é o número certo. Tenta um número maior.".format(str(adivinha))
 
-            return render_template("sucesso.html", mensagem=mensagem)
+            return render_template("sucesso.html", mensagem=mensagem, user=user)
    
 @app.route("/mural/", methods=["GET"])
 def mural():
@@ -106,21 +125,25 @@ def add_message():
 
 @app.route("/registo/", methods=["GET", "POST"])
 def registo():
-    if request.methods=="GET":
+    if request.method == "GET":
         return render_template("registo.html")
 
     else:
-        name = request.form.get("user-name")
-        email = request.form.get("user-email")
+        utilizador = request.form.get("utilizador")
+        email = request.form.get("email")
 
         # create a User object
-        user = User(name=name, email=email)
+        user = User(nome=utilizador, email=email, segredo = str(random.randint(1, 10)))
 
         # save the user object into a database
-        db.add(user)
-        db.commit()
+        user.save()
 
-        return redirect(url_for('index'))
+        # save user's email into a cookie
+        response = make_response(redirect(url_for("index")))
+        response.set_cookie("email", email)
+
+        return response
+
 
 @app.errorhandler(404)
 def page_not_found(e):
