@@ -10,8 +10,9 @@
 <p>Vamos ver se és calhar de o adivinhar no minimo de tentativas possiveis</p>
 
 <form method="POST" action="/numero">
-    <input type="number" name="tentativa" min="1" max="10"     placeholder="1 a 10"> 
-    <button type="submit">Validar</button>
+    <div class="form-group">
+        <input type="number" name="tentativa" min="1" max="10" placeholder="1 a 10" value="tentativa"> <button type="submit" class="btn btn-primary btn-sm">Validar</button>
+    </div>
 </form>
 
 {% endblock content %}

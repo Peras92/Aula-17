@@ -3,7 +3,7 @@ from sqla_wrapper import SQLAlchemy
 import os
 from sqlalchemy_pagination import paginate
 import random
-from funcoes import utilizador
+#from funcoes import utilizador
 from datetime import datetime
 
 app = Flask(__name__)
@@ -68,13 +68,7 @@ def numero():
         user = None
 
     if request.method == "GET":
-        #segredo = request.cookies.get("segredo")
-
         pagina = make_response(render_template("numero.html", user=user))
-
-        #if not segredo:
-        #    novo_segredo = random.randint(1, 10)
-        #    pagina.set_cookie("segredo", str(novo_segredo))
 
         return pagina
 
@@ -83,11 +77,11 @@ def numero():
         segredo = user.segredo
 
         if adivinha == segredo:
-            mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(user.segredo))
+            mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(segredo))
 
             pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
             user.segredo = str(random.randint(1, 10))
-            #pagina.set_cookie("segredo", str(random.randint(1, 10)))
+
             user.save()
 
             return pagina
@@ -104,6 +98,14 @@ def numero():
    
 @app.route("/mural/", methods=["GET"])
 def mural():
+    #validar registo
+    email_address = request.cookies.get("email")
+
+    if email_address:
+        user = db.query(User).filter_by(email=email_address).first()
+    else:
+        user = None
+
     page = request.args.get("page")
 
     if not page:
@@ -113,11 +115,19 @@ def mural():
 
     mensagem = paginate(query=mensagem_filtrada, page=int(page), page_size=5)
 
-    return render_template("mural.html", mensagem=mensagem)
+    return render_template("mural.html", mensagem=mensagem, user=user)
 
 @app.route("/add-message", methods=["POST"])
 def add_message():
-    utilizador = request.form.get("utilizador")
+    #validar registo
+    email_address = request.cookies.get("email")
+
+    if email_address:
+        user = db.query(User).filter_by(email=email_address).first()
+    else:
+        user = None
+
+    utilizador = user.nome
     texto = request.form.get("texto")
 
     mensagem = Mensagem(utilizador=utilizador, texto=texto)
