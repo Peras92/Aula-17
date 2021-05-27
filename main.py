@@ -68,25 +68,27 @@ def numero():
         user = None
 
     if request.method == "GET":
-        segredo = request.cookies.get("segredo")
+        #segredo = request.cookies.get("segredo")
 
-        pagina = make_response(render_template("numero.html"))
+        pagina = make_response(render_template("numero.html", user=user))
 
-        if not segredo:
-            novo_segredo = random.randint(1, 10)
-            pagina.set_cookie("segredo", str(novo_segredo))
+        #if not segredo:
+        #    novo_segredo = random.randint(1, 10)
+        #    pagina.set_cookie("segredo", str(novo_segredo))
 
         return pagina
 
     elif request.method == "POST":
         adivinha = int(request.form.get("tentativa"))
-        segredo = int(request.cookies.get("segredo"))
+        segredo = user.segredo
 
         if adivinha == segredo:
-            mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(segredo))
+            mensagem = "Parabens! Conseguiste adivinhar que o número secreto era o {0}!".format(str(user.segredo))
 
             pagina = make_response(render_template("sucesso.html", mensagem = mensagem))
-            pagina.set_cookie("segredo", str(random.randint(1, 10)))
+            user.segredo = str(random.randint(1, 10))
+            #pagina.set_cookie("segredo", str(random.randint(1, 10)))
+            user.save()
 
             return pagina
 
