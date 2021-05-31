@@ -3,8 +3,9 @@ from sqla_wrapper import SQLAlchemy
 import os
 from sqlalchemy_pagination import paginate
 import random
-#from funcoes import utilizador
 from datetime import datetime
+import uuid
+import hashlib
 
 app = Flask(__name__)
 
@@ -20,18 +21,31 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String)
     email = db.Column(db.String, unique=True)
+    password = db.Column(db.String)
+    session_token = db.Column(db.String)
     segredo = db.Column(db.Integer)
 
 db.create_all()
 
+#questionar motivo da função não funcionar
+#def utilizador_ref():
+#    session_token = request.cookies.get("session_token")
+
+#    if session_token:
+#        user = db.query(User).filter_by(session_token=session_token).first()
+#    else:
+#        user = None
+#    return user
+
 @app.route("/")
 def index():
-    email_address = request.cookies.get("email")
+    session_token = request.cookies.get("session_token")
 
-    if email_address:
-        user = db.query(User).filter_by(email=email_address).first()
+    if session_token:
+        user = db.query(User).filter_by(session_token=session_token).first()
     else:
         user = None
+    
     return render_template("index.html", user=user)
 
 @app.route("/aboutme/")
@@ -60,10 +74,10 @@ def cabeleireiro():
 
 @app.route("/numero/", methods=["Get", "POST"])
 def numero():
-    email_address = request.cookies.get("email")
+    session_token = request.cookies.get("session_token")
 
-    if email_address:
-        user = db.query(User).filter_by(email=email_address).first()
+    if session_token:
+        user = db.query(User).filter_by(session_token=session_token).first()
     else:
         user = None
 
@@ -99,10 +113,10 @@ def numero():
 @app.route("/mural/", methods=["GET"])
 def mural():
     #validar registo
-    email_address = request.cookies.get("email")
+    session_token = request.cookies.get("session_token")
 
-    if email_address:
-        user = db.query(User).filter_by(email=email_address).first()
+    if session_token:
+        user = db.query(User).filter_by(session_token=session_token).first()
     else:
         user = None
 
@@ -120,10 +134,10 @@ def mural():
 @app.route("/add-message", methods=["POST"])
 def add_message():
     #validar registo
-    email_address = request.cookies.get("email")
+    session_token = request.cookies.get("session_token")
 
-    if email_address:
-        user = db.query(User).filter_by(email=email_address).first()
+    if session_token:
+        user = db.query(User).filter_by(session_token=session_token).first()
     else:
         user = None
 
@@ -143,18 +157,36 @@ def registo():
     else:
         utilizador = request.form.get("utilizador")
         email = request.form.get("email")
+        password = request.form.get("password_user")
 
+        # hash the password
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+        user = db.query(User).filter_by(email=email).first()
+
+        if not user:
         # create a User object
-        user = User(nome=utilizador, email=email, segredo = str(random.randint(1, 10)))
+            user = User(nome=utilizador, email=email, password=hashed_password, segredo = str(random.randint(1, 10)))
 
         # save the user object into a database
         user.save()
 
-        # save user's email into a cookie
-        response = make_response(redirect(url_for("index")))
-        response.set_cookie("email", email)
+        if hashed_password != user.password:
+            return "WRONG PASSWORD! Go back and try again."
 
-        return response
+        elif hashed_password == user.password:
+            # create a random session token for this user
+            session_token = str(uuid.uuid4())
+
+            # save the session token in a database
+            user.session_token = session_token
+            user.save()
+            
+            # save user's email into a cookie
+            response = make_response(redirect(url_for("index")))
+            response.set_cookie("session_token", session_token, httponly=True, samesite='Strict')
+
+            return response
 
 
 @app.errorhandler(404)
