@@ -27,34 +27,32 @@ class User(db.Model):
 
 db.create_all()
 
-#questionar motivo da função não funcionar
-#def utilizador_ref():
-#    session_token = request.cookies.get("session_token")
-
-#    if session_token:
-#        user = db.query(User).filter_by(session_token=session_token).first()
-#    else:
-#        user = None
-#    return user
-
-@app.route("/")
-def index():
+#função para validar se o utilizar está logado
+def utilizador_reg():
     session_token = request.cookies.get("session_token")
 
     if session_token:
         user = db.query(User).filter_by(session_token=session_token).first()
     else:
         user = None
+    return user
+
+@app.route("/")
+def index():
+    user = utilizador_reg()
     
     return render_template("index.html", user=user)
 
 @app.route("/aboutme/")
 def about_me():
-    return render_template("about_me.html", page = "aboutme")
+    user = utilizador_reg()
+
+    return render_template("about_me.html", user=user)
 
 @app.route("/portefolio/")
 def portfolio():
-    return render_template("portefolio.html")
+    user = utilizador_reg()
+    return render_template("portefolio.html", user=user)
 
 @app.route("/portefolio/fakebook/")
 def fakebook():
@@ -74,12 +72,7 @@ def cabeleireiro():
 
 @app.route("/numero/", methods=["Get", "POST"])
 def numero():
-    session_token = request.cookies.get("session_token")
-
-    if session_token:
-        user = db.query(User).filter_by(session_token=session_token).first()
-    else:
-        user = None
+    user = utilizador_reg()
 
     if request.method == "GET":
         pagina = make_response(render_template("numero.html", user=user))
@@ -112,13 +105,7 @@ def numero():
    
 @app.route("/mural/", methods=["GET"])
 def mural():
-    #validar registo
-    session_token = request.cookies.get("session_token")
-
-    if session_token:
-        user = db.query(User).filter_by(session_token=session_token).first()
-    else:
-        user = None
+    user = utilizador_reg()
 
     page = request.args.get("page")
 
@@ -133,13 +120,7 @@ def mural():
 
 @app.route("/add-message", methods=["POST"])
 def add_message():
-    #validar registo
-    session_token = request.cookies.get("session_token")
-
-    if session_token:
-        user = db.query(User).filter_by(session_token=session_token).first()
-    else:
-        user = None
+    user = utilizador_reg()
 
     utilizador = user.nome
     texto = request.form.get("texto")
@@ -194,10 +175,10 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
-@app.errorhandler(500)
-def page_not_found(e):
+#@app.errorhandler(500)
+#def page_not_found(e):
     # note that we set the 500 status explicitly
-    return render_template('404.html'), 500
+#    return render_template('404.html'), 500
 
 if __name__ == '__main__':
     app.run()  # if you use the port parameter, delete it before deploying to Heroku
