@@ -3,7 +3,7 @@ from sqla_wrapper import SQLAlchemy
 import os
 from sqlalchemy_pagination import paginate
 import random
-from datetime import datetime
+#from datetime import datetime
 import uuid
 import hashlib
 
@@ -168,6 +168,15 @@ def registo():
             response.set_cookie("session_token", session_token, httponly=True, samesite='Strict')
 
             return response
+
+@app.route("/profile", methods=["GET"])
+def profile():
+    user = utilizador_reg
+
+    if user:
+        return render_template("profile.html", user=user)
+    else:
+        return redirect(url_for("/index"))
 
 
 @app.errorhandler(404)
