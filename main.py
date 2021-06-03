@@ -24,6 +24,7 @@ class User(db.Model):
     password = db.Column(db.String)
     session_token = db.Column(db.String)
     segredo = db.Column(db.Integer)
+    activo = db.Column(db.Boolean, default = True)
 
 db.create_all()
 
@@ -32,7 +33,7 @@ def utilizador_reg():
     session_token = request.cookies.get("session_token")
 
     if session_token:
-        user = db.query(User).filter_by(session_token=session_token).first()
+        user = db.query(User).filter_by(session_token=session_token, activo=True).first()
     else:
         user = None
     return user
@@ -169,15 +170,78 @@ def registo():
 
             return response
 
-@app.route("/profile", methods=["GET"])
+@app.route("/profile/", methods=["GET"])
 def profile():
-    user = utilizador_reg
+    user = utilizador_reg()
 
     if user:
         return render_template("profile.html", user=user)
     else:
         return redirect(url_for("/index"))
 
+@app.route("/profile/edit/", methods=["GET", "POST"])
+def profile_edit():
+    user = utilizador_reg()
+
+    if request.method == "GET":
+        if user:  # if user is found
+            return render_template("profile_edit.html", user=user)
+        else:
+            return redirect(url_for("index"))
+
+    elif request.method == "POST":
+        utilizador = request.form.get("utilizador")
+        email = request.form.get("email")
+        password = request.form.get("password_user")
+
+        # hash the password
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+        user.nome = utilizador
+        user.email = email
+        user.password = hashed_password
+        
+        # save the user object into a database
+        user.save()
+
+        return redirect(url_for("profile"))
+
+@app.route("/profile/delete/", methods=["GET", "POST"])
+def profile_delete():
+    user = utilizador_reg()
+
+    if request.method == "GET":
+        if user:  # if user is found
+            return render_template("profile_delete.html", user=user)
+        else:
+            return redirect(url_for("index"))
+
+    elif request.method == "POST":
+        user.activo = False
+        user.save()
+        return redirect(url_for("index"))
+
+@app.route("/logout/")
+def logout():
+    response = redirect(url_for("index"))
+    response.delete_cookie("session_token")
+
+    return response
+
+
+@app.route("/utilizadores/", methods=["GET"])
+def utilizadores():
+    user = utilizador_reg()
+    utilizadores = db.query(User).all()
+
+    return render_template("utilizadores.html", utilizadores=utilizadores, user=user)
+
+@app.route("/utilizadores/<user_id>",  methods=["GET"])
+def detalhe_utilizador(user_id):
+    user = utilizador_reg()
+    detalhe = db.query(User).get(int(user_id))
+
+    return render_template("detalhe_utilizador.html", user=user, detalhe=detalhe)
 
 @app.errorhandler(404)
 def page_not_found(e):
