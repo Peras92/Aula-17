@@ -229,6 +229,20 @@ def logout():
     return response
 
 
+@app.route("/utilizadores/", methods=["GET"])
+def utilizadores():
+    user = utilizador_reg()
+    utilizadores = db.query(User).all()
+
+    return render_template("utilizadores.html", utilizadores=utilizadores, user=user)
+
+@app.route("/utilizadores/<user_id>",  methods=["GET"])
+def detalhe_utilizador(user_id):
+    user = utilizador_reg()
+    detalhe = db.query(User).get(int(user_id))
+
+    return render_template("detalhe_utilizador.html", user=user, detalhe=detalhe)
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
