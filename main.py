@@ -148,7 +148,7 @@ def registo():
 
         if not user:
         # create a User object
-            user = User(nome=utilizador, email=email, password=hashed_password, segredo = str(random.randint(1, 10)))
+            user = User(nome=utilizador, email=email, password=hashed_password, segredo = str(random.randint(1, 10)), activo = True)
 
         # save the user object into a database
         user.save()
