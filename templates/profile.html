@@ -4,13 +4,21 @@
 {% block content %}
  
 <div class="corpo"></div>
-    <h1 class="row justify-content-center">Bem vindos à tua página de perfil</h1>
+    <h1 class="row justify-content-center">Bem vindos à página do Rui Pereira</h1>
 
-    <p><strong>O teu nome:</strong> {{ user.nome }}</p>
-    <p><strong>O teu email:</strong> {{ user.email }}</p>
-    
-    <p><a href="/profile/edit/">Editar Perfil</a></p>
-    <p><a href="/profile/delete">Apagar Perfil</a></p>
+    <p class="disclaimer row justify-content-center"> Esta página pretende receber todos aqueles que queiram conhecer um pouco mais sobre mim e sobre os trabalhos que já realizei</p>
+
+    <div class="conteudo row justify-content-evenly">
+        <div class="sobre_mim col-4">
+            <h2>Sobre mim</h2>
+            <p>Aqui vais poder saber um pouco mais <a href="/aboutme/">sobre mim</a></p>
+        </div>
+
+        <div class="portefolio col-4">
+            <h2>Portefolio</h2>
+            <p><a href="/portefolio/">Aqui</a> encontras alguns dos trabalhos já realizados</p>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
